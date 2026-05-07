@@ -20,7 +20,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -59,7 +59,7 @@ services:
     networks:
       - foodchain-network
     healthcheck:
-      test: ["CMD-SHELL", "echo ruok | nc -w 2 localhost 2181 | grep imok"]
+      test: ["CMD-SHELL", "echo srvr | nc -w 2 localhost 2181 | grep -q Mode"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -95,9 +95,10 @@ services:
   # ── Spring Cloud Core ──────────────────────────────────────────────────────
 
   config-server:
+    image: config-server:latest
     build:
       context: ..
-      dockerfile: ../config-server/Dockerfile
+      dockerfile: config-server/Dockerfile
     container_name: config-server
     restart: on-failure
     depends_on:
@@ -122,9 +123,10 @@ services:
       start_period: 60s
 
   eureka-server:
+    image: eureka-server:latest
     build:
       context: ..
-      dockerfile: ../eureka-server/Dockerfile
+      dockerfile: eureka-server/Dockerfile
     container_name: eureka-server
     restart: on-failure
     depends_on:
@@ -147,9 +149,10 @@ services:
   # ── API Gateway ────────────────────────────────────────────────────────────
 
   api-gateway:
+    image: api-gateway:latest
     build:
       context: ..
-      dockerfile: ../api-gateway/Dockerfile
+      dockerfile: api-gateway/Dockerfile
     container_name: api-gateway
     restart: on-failure
     depends_on:
@@ -173,9 +176,10 @@ services:
   # ── Business Services ──────────────────────────────────────────────────────
 
   order-service:
+    image: order-service:latest
     build:
       context: ..
-      dockerfile: ../order-service/Dockerfile
+      dockerfile: order-service/Dockerfile
     container_name: order-service
     restart: on-failure
     depends_on:
@@ -201,16 +205,17 @@ services:
     networks:
       - foodchain-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8083/api/actuator/health"]
       interval: 15s
       timeout: 10s
       retries: 10
       start_period: 60s
 
   kitchen-service:
+    image: kitchen-service:latest
     build:
       context: ..
-      dockerfile: ../kitchen-service/Dockerfile
+      dockerfile: kitchen-service/Dockerfile
     container_name: kitchen-service
     restart: on-failure
     depends_on:
@@ -238,9 +243,10 @@ services:
       start_period: 60s
 
   menu-service:
+    image: menu-service:latest
     build:
       context: ..
-      dockerfile: ../menu-service/Dockerfile
+      dockerfile: menu-service/Dockerfile
     container_name: menu-service
     restart: on-failure
     depends_on:
@@ -266,16 +272,17 @@ services:
     networks:
       - foodchain-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8082/api/actuator/health"]
       interval: 15s
       timeout: 10s
       retries: 10
       start_period: 60s
 
   branch-service:
+    image: branch-service:latest
     build:
       context: ..
-      dockerfile: ../branch-service/Dockerfile
+      dockerfile: branch-service/Dockerfile
     container_name: branch-service
     restart: on-failure
     depends_on:
@@ -294,16 +301,17 @@ services:
     networks:
       - foodchain-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/actuator/health"]
       interval: 15s
       timeout: 10s
       retries: 10
       start_period: 60s
 
   analytics-service:
+    image: analytics-service:latest
     build:
       context: ..
-      dockerfile: ../analytics-service/Dockerfile
+      dockerfile: analytics-service/Dockerfile
     container_name: analytics-service
     restart: on-failure
     depends_on:
@@ -329,16 +337,17 @@ services:
     networks:
       - foodchain-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8085/api/actuator/health"]
       interval: 15s
       timeout: 10s
       retries: 10
       start_period: 60s
 
   report-service:
+    image: report-service:latest
     build:
       context: ..
-      dockerfile: ../report-service/Dockerfile
+      dockerfile: report-service/Dockerfile
     container_name: report-service
     restart: on-failure
     depends_on:
@@ -357,7 +366,7 @@ services:
     networks:
       - foodchain-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8086/api/actuator/health"]
       interval: 15s
       timeout: 10s
       retries: 10
