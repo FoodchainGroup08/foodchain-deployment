@@ -170,7 +170,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/order_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/order_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
@@ -235,7 +235,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/menu_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/menu_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
@@ -265,7 +265,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/branch_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/branch_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
     networks:
@@ -296,7 +296,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/analytics_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/analytics_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
@@ -326,7 +326,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/report_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/report_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
     networks:
