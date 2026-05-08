@@ -74,6 +74,7 @@ services:
 
   config-server:
     image: config-server:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: config-server/Dockerfile
@@ -100,6 +101,7 @@ services:
 
   eureka-server:
     image: eureka-server:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: eureka-server/Dockerfile
@@ -126,6 +128,7 @@ services:
 
   api-gateway:
     image: api-gateway:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: api-gateway/Dockerfile
@@ -153,6 +156,7 @@ services:
 
   order-service:
     image: order-service:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: order-service/Dockerfile
@@ -187,6 +191,7 @@ services:
 
   kitchen-service:
     image: kitchen-service:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: kitchen-service/Dockerfile
@@ -218,6 +223,7 @@ services:
 
   menu-service:
     image: menu-service:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: menu-service/Dockerfile
@@ -252,6 +258,7 @@ services:
 
   branch-service:
     image: branch-service:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: branch-service/Dockerfile
@@ -279,6 +286,7 @@ services:
 
   analytics-service:
     image: analytics-service:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: analytics-service/Dockerfile
@@ -313,6 +321,7 @@ services:
 
   report-service:
     image: report-service:latest
+    platform: linux/amd64
     build:
       context: ..
       dockerfile: report-service/Dockerfile
