@@ -277,12 +277,12 @@ services:
       retries: 10
       start_period: 60s
 
-  analytics-service:
-    image: analytics-service:latest
+  analytics-report-service:
+    image: analytics-report-service:latest
     build:
-      context: ../analytics-service
+      context: ../analytics-report-service
       dockerfile: Dockerfile
-    container_name: analytics-service
+    container_name: analytics-report-service
     restart: on-failure
     depends_on:
       eureka-server:
@@ -296,7 +296,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/analytics_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
+      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/analytics_report_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
@@ -311,39 +311,12 @@ services:
       retries: 10
       start_period: 60s
 
-  report-service:
-    image: report-service:latest
+  notifications-service:
+    image: notifications-service:latest
     build:
-      context: ../report-service
+      context: ../notifications-service
       dockerfile: Dockerfile
-    container_name: report-service
-    restart: on-failure
-    depends_on:
-      eureka-server:
-        condition: service_healthy
-    ports:
-      - "8086:8086"
-    environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/report_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
-      SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
-    networks:
-      - foodchain-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8086/api/actuator/health"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 60s
-
-  notification-service:
-    image: notification-service:latest
-    build:
-      context: ../notification-service
-      dockerfile: Dockerfile
-    container_name: notification-service
+    container_name: notifications-service
     restart: on-failure
     depends_on:
       eureka-server:
@@ -357,6 +330,9 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/notifications_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
+      SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092

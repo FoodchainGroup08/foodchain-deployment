@@ -1,0 +1,114 @@
+# networks:
+#   foodchain-network:
+#     driver: bridge
+
+# services:
+
+#   config-eureka-server:
+#     image: config-eureka-server:latest
+#     build:
+#       context: ../config-eureka-server
+#       dockerfile: Dockerfile
+#     container_name: config-eureka-server
+#     restart: on-failure
+#     ports:
+#       - "8761:8761"
+#     environment:
+#       CONFIG_REPO_URI: ${CONFIG_REPO_URI}
+#       JAVA_OPTS: "-Xmx200m -Xms64m"
+#     networks:
+#       - foodchain-network
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+#       interval: 15s
+#       timeout: 10s
+#       retries: 10
+#       start_period: 90s
+
+#   api-gateway:
+#     image: api-gateway:latest
+#     build:
+#       context: ../api-gateway
+#       dockerfile: Dockerfile
+#     container_name: api-gateway
+#     restart: on-failure
+#     depends_on:
+#       config-eureka-server:
+#         condition: service_healthy
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       SPRING_CONFIG_IMPORT: optional:configserver:http://config-eureka-server:8761
+#       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://config-eureka-server:8761/eureka/
+#       JWT_SECRET: ${JWT_SECRET}
+#       JAVA_OPTS: "-Xmx180m -Xms64m"
+#     networks:
+#       - foodchain-network
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+#       interval: 15s
+#       timeout: 10s
+#       retries: 10
+#       start_period: 60s
+
+#   branch-service:
+#     image: branch-service:latest
+#     build:
+#       context: ../branch-service
+#       dockerfile: Dockerfile
+#     container_name: branch-service
+#     restart: on-failure
+#     depends_on:
+#       config-eureka-server:
+#         condition: service_healthy
+#     ports:
+#       - "8081:8081"
+#     environment:
+#       SPRING_CONFIG_IMPORT: optional:configserver:http://config-eureka-server:8761
+#       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://config-eureka-server:8761/eureka/
+#       SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/branch_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
+#       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+#       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
+#       JAVA_OPTS: "-Xmx150m -Xms64m"
+#     networks:
+#       - foodchain-network
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8081/api/actuator/health"]
+#       interval: 15s
+#       timeout: 10s
+#       retries: 10
+#       start_period: 60s
+
+#   notifications-service:
+#     image: notifications-service:latest
+#     build:
+#       context: ../notifications-service
+#       dockerfile: Dockerfile
+#     container_name: notifications-service
+#     restart: on-failure
+#     depends_on:
+#       config-eureka-server:
+#         condition: service_healthy
+#     ports:
+#       - "8087:8087"
+#     environment:
+#       SPRING_CONFIG_IMPORT: optional:configserver:http://config-eureka-server:8761
+#       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://config-eureka-server:8761/eureka/
+#       SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/notifications_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
+#       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+#       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
+#       SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+#       SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+#       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+#       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+#       KAFKA_API_KEY: ${KAFKA_API_KEY}
+#       KAFKA_API_SECRET: ${KAFKA_API_SECRET}
+#       JAVA_OPTS: "-Xmx150m -Xms64m"
+#     networks:
+#       - foodchain-network
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8087/api/actuator/health"]
+#       interval: 15s
+#       timeout: 10s
+#       retries: 10
+#       start_period: 60s
