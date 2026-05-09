@@ -1,0 +1,126 @@
+# networks:
+#   foodchain-network:
+#     driver: bridge
+
+# services:
+
+#   order-service:
+#     image: order-service:latest
+#     build:
+#       context: ../order-service
+#       dockerfile: Dockerfile
+#     container_name: order-service
+#     restart: on-failure
+#     ports:
+#       - "8083:8083"
+#     environment:
+#       SPRING_CONFIG_IMPORT: ${CONFIG_SERVER_URL}
+#       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_SERVER_URL}
+#       SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/order_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
+#       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+#       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
+#       SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+#       SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+#       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+#       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+#       KAFKA_API_KEY: ${KAFKA_API_KEY}
+#       KAFKA_API_SECRET: ${KAFKA_API_SECRET}
+#       JAVA_OPTS: "-Xmx160m -Xms64m"
+#     networks:
+#       - foodchain-network
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8083/api/actuator/health"]
+#       interval: 15s
+#       timeout: 10s
+#       retries: 15
+#       start_period: 90s
+
+#   menu-service:
+#     image: menu-service:latest
+#     build:
+#       context: ../menu-service
+#       dockerfile: Dockerfile
+#     container_name: menu-service
+#     restart: on-failure
+#     ports:
+#       - "8082:8082"
+#     environment:
+#       SPRING_CONFIG_IMPORT: ${CONFIG_SERVER_URL}
+#       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_SERVER_URL}
+#       SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/menu_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
+#       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+#       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
+#       SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+#       SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+#       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+#       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+#       KAFKA_API_KEY: ${KAFKA_API_KEY}
+#       KAFKA_API_SECRET: ${KAFKA_API_SECRET}
+#       JAVA_OPTS: "-Xmx150m -Xms64m"
+#     networks:
+#       - foodchain-network
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8082/api/actuator/health"]
+#       interval: 15s
+#       timeout: 10s
+#       retries: 15
+#       start_period: 90s
+
+#   kitchen-service:
+#     image: kitchen-service:latest
+#     build:
+#       context: ../kitchen-service
+#       dockerfile: Dockerfile
+#     container_name: kitchen-service
+#     restart: on-failure
+#     ports:
+#       - "8084:8084"
+#     environment:
+#       SPRING_CONFIG_IMPORT: ${CONFIG_SERVER_URL}
+#       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_SERVER_URL}
+#       SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+#       SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+#       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+#       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+#       KAFKA_API_KEY: ${KAFKA_API_KEY}
+#       KAFKA_API_SECRET: ${KAFKA_API_SECRET}
+#       JAVA_OPTS: "-Xmx140m -Xms64m"
+#     networks:
+#       - foodchain-network
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8084/api/actuator/health"]
+#       interval: 15s
+#       timeout: 10s
+#       retries: 15
+#       start_period: 90s
+
+#   analytics-report-service:
+#     image: analytics-report-service:latest
+#     build:
+#       context: ../analytics-report-service
+#       dockerfile: Dockerfile
+#     container_name: analytics-report-service
+#     restart: on-failure
+#     ports:
+#       - "8085:8085"
+#     environment:
+#       SPRING_CONFIG_IMPORT: ${CONFIG_SERVER_URL}
+#       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_SERVER_URL}
+#       SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/analytics_report_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
+#       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+#       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
+#       SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+#       SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+#       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+#       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+#       KAFKA_API_KEY: ${KAFKA_API_KEY}
+#       KAFKA_API_SECRET: ${KAFKA_API_SECRET}
+#       JAVA_OPTS: "-Xmx160m -Xms64m"
+#     networks:
+#       - foodchain-network
+#     healthcheck:
+#       test: ["CMD", "curl", "-f", "http://localhost:8085/api/actuator/health"]
+#       interval: 15s
+#       timeout: 10s
+#       retries: 15
+#       start_period: 90s
