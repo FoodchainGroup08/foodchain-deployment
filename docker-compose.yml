@@ -6,6 +6,7 @@ networks:
 
 volumes:
   redis-data:
+  user-mysql-data:
 
 services:
 
@@ -69,6 +70,26 @@ services:
       timeout: 10s
       retries: 10
       start_period: 40s
+
+  user-mysql:
+    image: mysql:8.0
+    container_name: user-mysql
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: ${USER_DB_PASSWORD:-devpassword}
+      MYSQL_DATABASE: user_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - user-mysql-data:/var/lib/mysql
+    networks:
+      - foodchain-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${USER_DB_PASSWORD:-devpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # ── Spring Cloud Core ──────────────────────────────────────────────────────
 
@@ -346,3 +367,42 @@ services:
       timeout: 10s
       retries: 10
       start_period: 60s
+
+  user-service:
+    image: user-service:latest
+    platform: linux/amd64
+    build:
+      context: ..
+      dockerfile: user-service/Dockerfile
+    container_name: user-service
+    restart: on-failure
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      user-mysql:
+        condition: service_healthy
+    ports:
+      - "8090:8081"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      DB_HOST: user-mysql
+      DB_NAME: user_db
+      DB_USERNAME: root
+      DB_PASSWORD: ${USER_DB_PASSWORD:-devpassword}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - foodchain-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/actuator/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
