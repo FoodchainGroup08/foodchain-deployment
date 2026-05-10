@@ -306,6 +306,8 @@ services:
     ports:
       - "8083:8083"
     environment:
+      # Force HTTP port so it matches published port + healthcheck (jar default 8183 otherwise wins if config is slow/missing)
+      SERVER_PORT: "8083"
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT:-mysql}:${RDS_PORT:-3306}/order_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
@@ -317,6 +319,10 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092}
       KAFKA_API_KEY: ${KAFKA_API_KEY:-}
       KAFKA_API_SECRET: ${KAFKA_API_SECRET:-}
+      PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY:-}
+      PAYSTACK_CURRENCY: ${PAYSTACK_CURRENCY:-NGN}
+      PAYSTACK_CALLBACK_URL: ${PAYSTACK_CALLBACK_URL:-http://localhost:5173/checkout/payment/callback}
+      KAFKA_TOPIC_EMAIL_SEND: ${KAFKA_TOPIC_EMAIL_SEND:-notification.email.send}
     networks:
       - foodchain-network
     healthcheck:

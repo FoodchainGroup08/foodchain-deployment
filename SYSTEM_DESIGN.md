@@ -144,28 +144,31 @@ Browser / Mobile App
 
 ## Auth Flow (JWT)
 
+**user-service** issues access and refresh tokens (HS256) with the same `jwt.secret` the **api-gateway** uses to validate requests.
+
 ```
 Step 1 — Login
-  Client → Python Auth Service (direct or via gateway public route)
-  Python Auth issues JWT signed with shared secret (HS256)
+  Client → POST {gateway}/api/v1/auth/login  (public — no Bearer token)
+  user-service returns JSON: accessToken, refreshToken, expiresIn, user (UserResponse)
 
 Step 2 — Subsequent requests
-  Client sends: Authorization: Bearer <token>
-  Gateway's JwtAuthFilter validates token locally (no network call)
-  Extracts claims → injects as trusted headers:
-    X-User-Id:    "123"
-    X-User-Role:  "CUSTOMER"
-    X-User-Email: "user@example.com"
+  Client sends: Authorization: Bearer <access-token>
+  Gateway JwtAuthFilter validates JWT (same shared secret as user-service)
+  Strips Authorization, injects trusted headers for downstream:
+    X-User-Id:     <UUID from "sub" claim>
+    X-User-Role:   <from "role" claim, e.g. CUSTOMER>
+    X-User-Email:  <from "email" claim>
+    X-User-BranchId: <optional, from "branchId" claim>
 
 Step 3 — Downstream services
-  Receive X-User-* headers instead of raw JWT
-  They trust these headers (only reachable behind the gateway)
+  Typically read X-User-* headers (behind the gateway). Do not trust client-supplied user id in the body.
 
-Public routes (no JWT checked):
-  /api/auth/login
-  /api/auth/register
-  /api/auth/refresh
-  /actuator/**
+Public gateway paths (no Bearer required):
+  /api/v1/auth/** except GET /api/v1/auth/me (requires Bearer)
+  /actuator/** (where exposed), Swagger/OpenAPI docs routes as configured
+
+Frontend must set VITE_API_BASE_URL to the gateway base including **/api/v1** (e.g. http://localhost:8080/api/v1),
+because gateway routes are registered under `/api/v1/...`, not `/api/auth/...`.
 ```
 
 ---
