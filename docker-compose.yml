@@ -32,6 +32,12 @@ services:
       RDS_USERNAME: ${RDS_USERNAME}
       RDS_PASSWORD: ${RDS_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
     networks:
       - foodchain-network
     healthcheck:
@@ -93,6 +99,42 @@ services:
       start_period: 60s
 
   # ── Business Services ──────────────────────────────────────────────────────
+
+  user-service:
+    image: user-service:latest
+    build:
+      context: ../user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    restart: on-failure
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/user_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
+      SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
+      SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+      SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_MAIL_HOST: ${EMAIL_HOST}
+      SPRING_MAIL_PORT: ${EMAIL_PORT}
+      SPRING_MAIL_USERNAME: ${EMAIL_USER}
+      SPRING_MAIL_PASSWORD: ${EMAIL_PASS}
+      APP_MAIL_FROM: ${EMAIL_USER}
+    networks:
+      - foodchain-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/api/actuator/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
 
   branch-service:
     image: branch-service:latest
