@@ -161,9 +161,12 @@ services:
       retries: 10
       start_period: 90s
   
-  menu-service:
-    image: ${DOCKER_USERNAME}/menu-service:latest
-    container_name: menu-service
+
+  # ── Analytics & Reports ────────────────────────────────────────────────────
+
+  analytics-report-service:
+    image: ${DOCKER_USERNAME}/analytics-report-service:latest
+    container_name: analytics-report-service
     restart: unless-stopped
     depends_on:
       config-server:
@@ -171,19 +174,25 @@ services:
       eureka-server:
         condition: service_healthy
     ports:
-      - "8082:8082"
+      - "8085:8085"
     environment:
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_URL: "jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/menu_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/analytics_report_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true"
       SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
-      JDK_JAVA_OPTIONS: "-Xmx110m -Xms48m -XX:+UseSerialGC"
+      SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+      SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      KAFKA_API_KEY: ${KAFKA_API_KEY}
+      KAFKA_API_SECRET: ${KAFKA_API_SECRET}
+      JDK_JAVA_OPTIONS: "-Xmx130m -Xms64m -XX:+UseSerialGC"
     networks:
       - foodchain-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/api/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8085/api/actuator/health"]
       interval: 20s
       timeout: 10s
-      retries: 10
-      start_period: 90s
+      retries: 15
+      start_period: 120s
