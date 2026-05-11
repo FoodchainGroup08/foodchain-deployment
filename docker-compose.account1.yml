@@ -160,3 +160,30 @@ services:
       timeout: 10s
       retries: 10
       start_period: 90s
+  
+  menu-service:
+    image: ${DOCKER_USERNAME}/menu-service:latest
+    container_name: menu-service
+    restart: unless-stopped
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: "jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/menu_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+      SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
+      JDK_JAVA_OPTIONS: "-Xmx110m -Xms48m -XX:+UseSerialGC"
+    networks:
+      - foodchain-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/api/actuator/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
