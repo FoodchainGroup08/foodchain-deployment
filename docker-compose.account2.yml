@@ -97,68 +97,38 @@ services:
       retries: 15
       start_period: 120s
 
-  # ── Analytics & Reports ────────────────────────────────────────────────────
-
-  # analytics-report-service:
-  #   image: ${DOCKER_USERNAME}/analytics-report-service:latest
-  #   container_name: analytics-report-service
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8085:8085"
-  #   environment:
-  #     SPRING_CONFIG_IMPORT: "optional:configserver:http://${ACCOUNT1_IP}:8888"
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://${ACCOUNT1_IP}:8761/eureka/"
-  #     EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
-  #     SPRING_DATASOURCE_URL: "jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/analytics_report_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true"
-  #     SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
-  #     SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
-  #     SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
-  #     SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
-  #     SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
-  #     SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
-  #     KAFKA_API_KEY: ${KAFKA_API_KEY}
-  #     KAFKA_API_SECRET: ${KAFKA_API_SECRET}
-  #     JDK_JAVA_OPTIONS: "-Xmx130m -Xms64m -XX:+UseSerialGC"
-  #   networks:
-  #     - foodchain-network
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8085/api/actuator/health"]
-  #     interval: 20s
-  #     timeout: 10s
-  #     retries: 15
-  #     start_period: 120s
-
   # ── Notifications ──────────────────────────────────────────────────────────
 
-  # notifications-service:
-  #   image: ${DOCKER_USERNAME}/notifications-service:latest
-  #   container_name: notifications-service
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8087:8087"
-  #   environment:
-  #     SPRING_CONFIG_IMPORT: "optional:configserver:http://${ACCOUNT1_IP}:8888"
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://${ACCOUNT1_IP}:8761/eureka/"
-  #     EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
-  #     SPRING_DATASOURCE_URL: "jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/notifications_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true"
-  #     SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
-  #     SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
-  #     SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
-  #     SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
-  #     SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
-  #     SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
-  #     KAFKA_API_KEY: ${KAFKA_API_KEY}
-  #     KAFKA_API_SECRET: ${KAFKA_API_SECRET}
-  #     SPRING_MAIL_HOST: ${EMAIL_HOST}
-  #     SPRING_MAIL_PORT: ${EMAIL_PORT}
-  #     SPRING_MAIL_USERNAME: ${EMAIL_USER}
-  #     SPRING_MAIL_PASSWORD: ${EMAIL_PASS}
-  #     JDK_JAVA_OPTIONS: "-Xmx110m -Xms48m -XX:+UseSerialGC"
-  #   networks:
-  #     - foodchain-network
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8087/api/actuator/health"]
-  #     interval: 20s
-  #     timeout: 10s
-  #     retries: 15
-  #     start_period: 120s
+  notifications-service:
+    image: ${DOCKER_USERNAME}/notifications-service:latest
+    container_name: notifications-service
+    restart: unless-stopped
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://${ACCOUNT1_IP}:8888"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://${ACCOUNT1_IP}:8761/eureka/"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_INSTANCE_IP_ADDRESS: ${EUREKA_INSTANCE_IP_ADDRESS}
+      SPRING_DATASOURCE_URL: "jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/notifications_db?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+      SPRING_DATASOURCE_USERNAME: ${RDS_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${RDS_PASSWORD}
+      SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
+      SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      KAFKA_API_KEY: ${KAFKA_API_KEY}
+      KAFKA_API_SECRET: ${KAFKA_API_SECRET}
+      SPRING_MAIL_HOST: ${EMAIL_HOST}
+      SPRING_MAIL_PORT: ${EMAIL_PORT}
+      SPRING_MAIL_USERNAME: ${EMAIL_USER}
+      SPRING_MAIL_PASSWORD: ${EMAIL_PASS}
+      JDK_JAVA_OPTIONS: "-Xmx110m -Xms48m -XX:+UseSerialGC"
+    networks:
+      - foodchain-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8087/api/actuator/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 120s

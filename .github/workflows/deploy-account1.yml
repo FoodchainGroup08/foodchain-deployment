@@ -57,11 +57,11 @@ jobs:
               fi
             }
 
-            check_health "CONFIG"  http://localhost:8888/actuator/health
-            check_health "EUREKA"  http://localhost:8761/actuator/health
-            check_health "GATEWAY" http://localhost:8080/actuator/health
-            check_health "USER"    http://localhost:8086/api/actuator/health
-            check_health "BRANCH"  http://localhost:8081/api/actuator/health
-            check_health "MENU"    http://localhost:8082/api/actuator/health
+            check_health "CONFIG"    http://localhost:8888/actuator/health
+            check_health "EUREKA"    http://localhost:8761/actuator/health
+            check_health "GATEWAY"   http://localhost:8080/actuator/health
+            check_health "USER"      http://localhost:8086/api/actuator/health
+            check_health "BRANCH"    http://localhost:8081/api/actuator/health
+            check_health "ANALYTICS" http://localhost:8085/api/actuator/health
 
             echo "Deploy to Account 1 complete."
