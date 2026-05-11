@@ -39,16 +39,24 @@ jobs:
               --no-build
 
             # ── Quick health smoke-test ────────────────────────────────────────
-            echo "Waiting 40s for services to stabilise..."
-            sleep 40
+            echo "Waiting 60s for services to stabilise..."
+            sleep 60
 
             echo "=== Container status ==="
             docker-compose -f docker-compose.account2.yml ps
 
-            echo "=== Order Service health ==="
-            curl -sf http://localhost:8083/api/actuator/health | python3 -c "import sys,json; d=json.load(sys.stdin); print('ORDER STATUS:', d.get('status','UNKNOWN'))" || echo "Order service not ready yet"
+            check_health() {
+              local name=$1 url=$2
+              local body
+              body=$(curl -sf --max-time 5 "$url" 2>/dev/null || true)
+              if [ -z "$body" ]; then
+                echo "$name STATUS: not ready yet (still starting)"
+              else
+                echo "$body" | python3 -c "import sys,json; d=json.load(sys.stdin); print('$name STATUS:', d.get('status','UNKNOWN'))" 2>/dev/null || echo "$name STATUS: unexpected response"
+              fi
+            }
 
-            echo "=== Menu Service health ==="
-            curl -sf http://localhost:8082/api/actuator/health | python3 -c "import sys,json; d=json.load(sys.stdin); print('MENU STATUS:', d.get('status','UNKNOWN'))" || echo "Menu service not ready yet"
+            check_health "ORDER" http://localhost:8083/api/actuator/health
+            check_health "MENU"  http://localhost:8082/api/actuator/health
 
             echo "Deploy to Account 2 complete."
