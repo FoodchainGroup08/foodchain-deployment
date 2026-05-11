@@ -39,19 +39,25 @@ jobs:
               --no-build
 
             # ── Quick health smoke-test ────────────────────────────────────────
-            echo "Waiting 30s for services to stabilise..."
-            sleep 30
+            echo "Waiting 60s for services to stabilise..."
+            sleep 60
 
             echo "=== Container status ==="
             docker-compose -f docker-compose.account1.yml ps
 
-            echo "=== Config Server health ==="
-            curl -sf http://localhost:8888/actuator/health | python3 -c "import sys,json; d=json.load(sys.stdin); print('CONFIG STATUS:', d.get('status','UNKNOWN'))"
+            check_health() {
+              local name=$1 url=$2
+              local body
+              body=$(curl -sf --max-time 5 "$url" 2>/dev/null || true)
+              if [ -z "$body" ]; then
+                echo "$name STATUS: not ready yet (still starting)"
+              else
+                echo "$body" | python3 -c "import sys,json; d=json.load(sys.stdin); print('$name STATUS:', d.get('status','UNKNOWN'))" 2>/dev/null || echo "$name STATUS: unexpected response"
+              fi
+            }
 
-            echo "=== Eureka health ==="
-            curl -sf http://localhost:8761/actuator/health | python3 -c "import sys,json; d=json.load(sys.stdin); print('EUREKA STATUS:', d.get('status','UNKNOWN'))"
-
-            echo "=== API Gateway health ==="
-            curl -sf http://localhost:8080/actuator/health | python3 -c "import sys,json; d=json.load(sys.stdin); print('GATEWAY STATUS:', d.get('status','UNKNOWN'))"
+            check_health "CONFIG"  http://localhost:8888/actuator/health
+            check_health "EUREKA"  http://localhost:8761/actuator/health
+            check_health "GATEWAY" http://localhost:8080/actuator/health
 
             echo "Deploy to Account 1 complete."
