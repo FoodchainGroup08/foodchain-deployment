@@ -102,6 +102,7 @@ services:
       # Do not pass CONFIG_REPO_URI from .env here — placeholders like `your-org` break Git clone.
       # Use mounted ../foodchain-config (profile native). For Git mode, remove native + volume and add repo vars.
       SPRING_CLOUD_CONFIG_SERVER_GIT_URI: ""
+      SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS: file:/config-repo
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       # Credentials so Config Server can resolve ${...} in YAML files it serves
       REDIS_HOST: ${REDIS_HOST:-redis}
@@ -115,12 +116,6 @@ services:
       RDS_USERNAME: ${RDS_USERNAME:-root}
       RDS_PASSWORD: ${RDS_PASSWORD:-root}
       JWT_SECRET: ${JWT_SECRET}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      EMAIL_HOST: ${EMAIL_HOST}
-      EMAIL_PORT: ${EMAIL_PORT}
-      EMAIL_USER: ${EMAIL_USER}
-      EMAIL_PASS: ${EMAIL_PASS}
     networks:
       - foodchain-network
     healthcheck:
@@ -284,6 +279,11 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092}
       KAFKA_API_KEY: ${KAFKA_API_KEY:-}
       KAFKA_API_SECRET: ${KAFKA_API_SECRET:-}
+      APP_AI_FOOD_SUGGESTIONS_ENABLED: ${APP_AI_FOOD_SUGGESTIONS_ENABLED:-false}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_BASE_URL: ${GEMINI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      GEMINI_TIMEOUT_MS: ${GEMINI_TIMEOUT_MS:-15000}
     networks:
       - foodchain-network
     healthcheck:
@@ -312,6 +312,8 @@ services:
     ports:
       - "8083:8083"
     environment:
+      # Force HTTP port so it matches published port + healthcheck (jar default 8183 otherwise wins if config is slow/missing)
+      SERVER_PORT: "8083"
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://${RDS_ENDPOINT:-mysql}:${RDS_PORT:-3306}/order_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&socketTimeout=5000
@@ -323,6 +325,10 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092}
       KAFKA_API_KEY: ${KAFKA_API_KEY:-}
       KAFKA_API_SECRET: ${KAFKA_API_SECRET:-}
+      PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY:-}
+      PAYSTACK_CURRENCY: ${PAYSTACK_CURRENCY:-NGN}
+      PAYSTACK_CALLBACK_URL: ${PAYSTACK_CALLBACK_URL:-http://localhost:5173/checkout/payment/callback}
+      KAFKA_TOPIC_EMAIL_SEND: ${KAFKA_TOPIC_EMAIL_SEND:-notification.email.send}
     networks:
       - foodchain-network
     healthcheck:
@@ -435,10 +441,6 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092}
       KAFKA_API_KEY: ${KAFKA_API_KEY:-}
       KAFKA_API_SECRET: ${KAFKA_API_SECRET:-}
-      SPRING_MAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
-      SPRING_MAIL_PORT: ${EMAIL_PORT:-587}
-      SPRING_MAIL_USERNAME: ${EMAIL_USER:-}
-      SPRING_MAIL_PASSWORD: ${EMAIL_PASS:-}
       BREVO_API_KEY: ${BREVO_API_KEY:-}
       BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL:-}
       BREVO_SENDER_NAME: ${BREVO_SENDER_NAME:-FoodChain}
