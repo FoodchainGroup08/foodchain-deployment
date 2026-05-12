@@ -125,6 +125,8 @@ services:
       BREVO_SENDER_NAME: ${BREVO_SENDER_NAME:-FoodChain}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      OAUTH2_ENABLED: "true"
+      OAUTH2_REDIRECT_URI: "http://54.235.78.18:8080/login/oauth2/code/google"
       JWT_SECRET: ${JWT_SECRET}
       JDK_JAVA_OPTIONS: "-Xmx140m -Xms64m -XX:+UseSerialGC"
     networks:
