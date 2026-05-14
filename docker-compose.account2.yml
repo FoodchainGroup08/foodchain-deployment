@@ -141,6 +141,9 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
       AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME}
+      BREVO_API_KEY: ${BREVO_API_KEY}
+      BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL}
+      BREVO_SENDER_NAME: ${BREVO_SENDER_NAME:-FoodChain}
       JDK_JAVA_OPTIONS: "-Xmx110m -Xms48m -XX:+UseSerialGC"
     networks:
       - foodchain-network
