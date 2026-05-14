@@ -1,0 +1,55 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  - job_name: config-server
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['config-server:8888']
+
+  - job_name: eureka-server
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['eureka-server:8761']
+
+  - job_name: api-gateway
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['api-gateway:8080']
+
+  - job_name: user-service
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['user-service:8086']
+
+  - job_name: branch-service
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['branch-service:8081']
+
+  - job_name: menu-service
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['menu-service:8082']
+
+  - job_name: order-service
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['order-service:8083']
+
+  - job_name: kitchen-service
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['kitchen-service:8084']
+
+  - job_name: analytics-report-service
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['analytics-report-service:8085']
+
+  - job_name: notifications-service
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['notifications-service:8087']
