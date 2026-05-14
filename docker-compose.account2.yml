@@ -66,6 +66,8 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
       AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME}
+      APP_AI_FOOD_SUGGESTIONS_ENABLED: "true"
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
       JDK_JAVA_OPTIONS: "-Xmx120m -Xms48m -XX:+UseSerialGC"
     networks:
       - foodchain-network
