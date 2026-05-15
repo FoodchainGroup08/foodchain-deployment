@@ -32,17 +32,17 @@ scrape_configs:
   - job_name: menu-service
     metrics_path: /api/actuator/prometheus
     static_configs:
-      - targets: ['menu-service:8082']
+      - targets: ['3.222.22.241:8082']
 
   - job_name: order-service
     metrics_path: /api/actuator/prometheus
     static_configs:
-      - targets: ['order-service:8083']
+      - targets: ['3.222.22.241:8083']
 
   - job_name: kitchen-service
     metrics_path: /api/actuator/prometheus
     static_configs:
-      - targets: ['kitchen-service:8084']
+      - targets: ['3.222.22.241:8084']
 
   - job_name: analytics-report-service
     metrics_path: /api/actuator/prometheus
@@ -52,4 +52,4 @@ scrape_configs:
   - job_name: notifications-service
     metrics_path: /api/actuator/prometheus
     static_configs:
-      - targets: ['notifications-service:8087']
+      - targets: ['3.222.22.241:8087']
